@@ -1,5 +1,5 @@
 # Spring2024_ME555-05_ModelPredictiveControl_FinalProject  
-**Athre Hollakal, Ziyao Yin, Nicholas Morrison**
+#Athre Hollakal, Ziyao Yin, Nicholas Morrison#
 
 
 **Discritize using Euler's Methods:**
