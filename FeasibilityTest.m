@@ -131,3 +131,97 @@ for N = [2, 7]
  
 
 
+
+
+% Define number of random initial conditions
+num_random_conditions = 150;
+
+% Define state variable bounds
+x_min = [-10; -10; -pi/6; -pi/3; 0]; % Lower bounds for states
+x_max = [10; 10; pi/6; pi/3; 400]; % Upper bounds for states
+
+% Ensure 'T' is an integer
+T = round(15); % Ensure integer value
+
+% Store results for tracking if they are within feasible regions
+out_of_bounds_count = 0;
+
+% Loop to generate and simulate for each random initial condition
+for i = 1:num_random_conditions
+    % Generate random initial condition
+    x0 = x_min + (x_max - x_min) .* rand(5, 1); % Randomized initial condition
+    
+    % Reset trajectory arrays
+    x_traj = zeros(5, T + 1); % Ensure integer array size
+    u_traj = zeros(2, T); % Ensure integer array size
+    x_traj(:, 1) = x0; 
+    
+    % Loop through time steps
+    for t = 1:T
+        % Calculate batch matrices and optimal control inputs
+        [Abatch, Bbatch, Qbatch, Rbatch] = BatchMatrices(A, B, Q, R, P, N); 
+        [~, Dbatch, ~, ~] = BatchMatrices(A, eye(5), Q, R, P, N);
+        Dbatch = Dbatch * kron(ones(N,1), D);
+        
+        % Calculate H and f for quadratic programming
+        H = 2 * (Bbatch' * Qbatch * Bbatch + Rbatch); 
+        f = 2 * (Bbatch' * Qbatch' * (Abatch * x_traj(:, t) + Dbatch));
+        
+        % Define constraints
+        Hu = kron(eye(N), U.A); 
+        Ku = kron(ones(N,1), U.b);
+        Hx = blkdiag(kron(eye(N), X.A), C.A);
+        Kx = [kron(ones(N,1), X.b); C.b];
+        
+        % Solve quadratic programming
+        [u_opt, ~] = quadprog(H, f, [Hx * Bbatch; Hu], [Kx-Hx * Abatch * x_traj(:, t)-Hx * Dbatch; Ku], [], []);
+        
+        % Check if control inputs are feasible
+        if isempty(u_opt)
+            out_of_bounds_count = out_of_bounds_count + 1; % Out-of-bounds trajectory
+            break;
+        else
+            % Update control and state trajectories
+            u_traj(:, t) = [u_opt(1); u_opt(2)];
+            x_next = A * x_traj(:, t) + B * u_traj(:, t) + D;
+            x_traj(:, t + 1) = x_next; % Ensure valid indexing
+        end
+    end
+    
+    % Plot control and state trajectories if within feasible bounds
+    if t == T % Only plot if all steps were within feasible region
+        figure; 
+        subplot(7, 1, 1); 
+        plot(0:T, x_traj(1,:), 'b', 'LineWidth', 2); 
+        xlabel('Time'); 
+        ylabel('X1 (Vx)'); 
+        subplot(7, 1, 2); 
+        plot(0:T, x_traj(2,:), 'b', 'LineWidth', 2); 
+        xlabel('Time'); 
+        ylabel('X2 (Vy)'); 
+        subplot(7, 1, 3); 
+        plot(0:T, x_traj(3,:), 'b', 'LineWidth', 2); 
+        xlabel('Time'); 
+        ylabel('X3 (Theta)'); 
+        subplot(7, 1, 4); 
+        plot(0:T, x_traj(4,:), 'b', 'LineWidth', 2); 
+        xlabel('Time'); 
+        ylabel('X4 (ThetaDot)'); 
+        subplot(7, 1, 5); 
+        plot(0:T, x_traj(5,:), 'b', 'LineWidth', 2); 
+        xlabel('Time'); 
+        ylabel('X5 (mass)'); 
+        subplot(7, 1, 6); 
+        plot(0:T - 1, u_traj(1,:), 'r', 'LineWidth', 2); 
+        xlabel('Time'); 
+        ylabel('U1 (Thrust)'); 
+        subplot(7, 1, 7); 
+        plot(0:T - 1, u_traj(2,:), 'r', 'LineWidth', 2); 
+        xlabel('Time'); 
+        ylabel('U2 (Delta)'); 
+        grid on;
+    end
+end
+
+% Display count of trajectories that went out of bounds
+fprintf('Number of trajectories out of bounds: %d\n /150', out_of_bounds_count);
