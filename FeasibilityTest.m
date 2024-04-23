@@ -189,38 +189,38 @@ for i = 1:num_random_conditions
     end
     
     % Plot control and state trajectories if within feasible bounds
-    if t == T % Only plot if all steps were within feasible region
-        figure; 
-        subplot(7, 1, 1); 
-        plot(0:T, x_traj(1,:), 'b', 'LineWidth', 2); 
-        xlabel('Time'); 
-        ylabel('X1 (Vx)'); 
-        subplot(7, 1, 2); 
-        plot(0:T, x_traj(2,:), 'b', 'LineWidth', 2); 
-        xlabel('Time'); 
-        ylabel('X2 (Vy)'); 
-        subplot(7, 1, 3); 
-        plot(0:T, x_traj(3,:), 'b', 'LineWidth', 2); 
-        xlabel('Time'); 
-        ylabel('X3 (Theta)'); 
-        subplot(7, 1, 4); 
-        plot(0:T, x_traj(4,:), 'b', 'LineWidth', 2); 
-        xlabel('Time'); 
-        ylabel('X4 (ThetaDot)'); 
-        subplot(7, 1, 5); 
-        plot(0:T, x_traj(5,:), 'b', 'LineWidth', 2); 
-        xlabel('Time'); 
-        ylabel('X5 (mass)'); 
-        subplot(7, 1, 6); 
-        plot(0:T - 1, u_traj(1,:), 'r', 'LineWidth', 2); 
-        xlabel('Time'); 
-        ylabel('U1 (Thrust)'); 
-        subplot(7, 1, 7); 
-        plot(0:T - 1, u_traj(2,:), 'r', 'LineWidth', 2); 
-        xlabel('Time'); 
-        ylabel('U2 (Delta)'); 
-        grid on;
-    end
+    % if t == T % Only plot if all steps were within feasible region
+    %     figure; 
+    %     subplot(7, 1, 1); 
+    %     plot(0:T, x_traj(1,:), 'b', 'LineWidth', 2); 
+    %     xlabel('Time'); 
+    %     ylabel('X1 (Vx)'); 
+    %     subplot(7, 1, 2); 
+    %     plot(0:T, x_traj(2,:), 'b', 'LineWidth', 2); 
+    %     xlabel('Time'); 
+    %     ylabel('X2 (Vy)'); 
+    %     subplot(7, 1, 3); 
+    %     plot(0:T, x_traj(3,:), 'b', 'LineWidth', 2); 
+    %     xlabel('Time'); 
+    %     ylabel('X3 (Theta)'); 
+    %     subplot(7, 1, 4); 
+    %     plot(0:T, x_traj(4,:), 'b', 'LineWidth', 2); 
+    %     xlabel('Time'); 
+    %     ylabel('X4 (ThetaDot)'); 
+    %     subplot(7, 1, 5); 
+    %     plot(0:T, x_traj(5,:), 'b', 'LineWidth', 2); 
+    %     xlabel('Time'); 
+    %     ylabel('X5 (mass)'); 
+    %     subplot(7, 1, 6); 
+    %     plot(0:T - 1, u_traj(1,:), 'r', 'LineWidth', 2); 
+    %     xlabel('Time'); 
+    %     ylabel('U1 (Thrust)'); 
+    %     subplot(7, 1, 7); 
+    %     plot(0:T - 1, u_traj(2,:), 'r', 'LineWidth', 2); 
+    %     xlabel('Time'); 
+    %     ylabel('U2 (Delta)'); 
+    %     grid on;
+    % end
 end
 
 fprintf('Number of trajectories out of bounds: %d in 150 \n', out_of_bounds_count);
