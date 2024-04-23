@@ -223,5 +223,4 @@ for i = 1:num_random_conditions
     end
 end
 
-% Display count of trajectories that went out of bounds
 fprintf('Number of trajectories out of bounds: %d in 150 \n', out_of_bounds_count);
