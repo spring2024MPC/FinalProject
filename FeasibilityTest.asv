@@ -35,15 +35,15 @@ P = P_inf;
 Dc = [0; 1000/mass - g; 0; 0; -1000/V_e]; 
 D = T.*Dc;  
 % X state polyhedron, lower/upper bounds for X states, Vx, Vy, Theta, There_dot, m 
-X = Polyhedron('lb', [-100; -100; -pi/6; -pi/3; 10], 'ub', [100; 100; pi/6; pi/3; 400]); 
+X = Polyhedron('lb', [-10; -10; -pi/6; -pi/3; 0], 'ub', [10; 10; pi/6; pi/3; 400]); 
 % U state polyhedron, lower/upper bounds for U states, Thrust T and Delta 
-U = Polyhedron('lb', [-1300; -pi/3], 'ub', [1300; pi/3]); 
+U = Polyhedron('lb', [-1300; -pi/6], 'ub', [1300; pi/6]); 
 %Finding our CI set and labeling it C for our LTI system so Xf = C 
 system = LTISystem('A', A, 'B', B, 'f', D); 
 system.x.min = [-10; -10; -pi/6; -pi/3; 0]; 
-system.x.max = [10; 10; pi/6; pi/3; 200]; 
-system.u.min = [-1300; -pi/3]; 
-system.u.max = [1300; pi/3]; 
+system.x.max = [10; 10; pi/6; pi/3; 400]; 
+system.u.min = [-1000; -pi/6]; 
+system.u.max = [0; pi/6]; 
 InvSet = system.invariantSet(); 
 C = InvSet; 
 % Initial condition goes here
@@ -134,11 +134,11 @@ for N = [2, 7]
 
 
 % Define number of random initial conditions
-num_random_conditions = 150;
+num_random_conditions = 1500;
 
 % Define state variable bounds
 x_min = [-10; -10; -pi/6; -pi/3; 10]; % Lower bounds for states
-x_max = [10; 10; pi/6; pi/3; 200]; % Upper bounds for states
+x_max = [10; 10; pi/6; pi/3; 400]; % Upper bounds for states
 
 % Ensure 'T' is an integer
 T = round(15); % Ensure integer value
@@ -224,4 +224,4 @@ for i = 1:num_random_conditions
 end
 
 % Display count of trajectories that went out of bounds
-fprintf('Number of trajectories out of bounds: %d in 150 \n', out_of_bounds_count);
+fprintf('Number of trajectories out of bounds: %d\n /150', out_of_bounds_count);
