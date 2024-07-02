@@ -134,7 +134,7 @@ for N = [2, 7]
 
 
 % Define number of random initial conditions
-num_random_conditions = 150;
+num_random_conditions = 1500;
 
 % Define state variable bounds
 x_min = [-10; -10; -pi/6; -pi/3; 10]; % Lower bounds for states
@@ -223,4 +223,4 @@ for i = 1:num_random_conditions
     % end
 end
 
-fprintf('Number of trajectories out of bounds: %d in 150 \n', out_of_bounds_count);
+fprintf('Number of trajectories out of bounds: %d in %d\n', out_of_bounds_count, num_random_conditions);
